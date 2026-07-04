@@ -1,0 +1,6 @@
+@gestao_sinistros_api_HostAddress = http://localhost:5119
+
+GET {{gestao_sinistros_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
