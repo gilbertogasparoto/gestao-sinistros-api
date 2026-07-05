@@ -54,12 +54,13 @@ namespace gestao_sinistros_api.Migrations
 
                     b.Property<string>("Numero")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("numero");
 
-                    b.Property<int>("TipoSeguro")
+                    b.Property<int>("RamoSeguro")
                         .HasColumnType("integer")
-                        .HasColumnName("tipo_seguro");
+                        .HasColumnName("ramo_seguro");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -91,22 +92,26 @@ namespace gestao_sinistros_api.Migrations
 
                     b.Property<string>("Documento")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(14)
+                        .HasColumnType("character varying(14)")
                         .HasColumnName("documento");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("email");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("nome");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
                         .HasColumnName("telefone");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -156,12 +161,12 @@ namespace gestao_sinistros_api.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
-                        .HasName("pk_historicos_sinistros");
+                        .HasName("pk_historico_sinistros");
 
                     b.HasIndex("SinistroId")
-                        .HasDatabaseName("ix_historicos_sinistros_sinistro_id");
+                        .HasDatabaseName("ix_historico_sinistros_sinistro_id");
 
-                    b.ToTable("historicos_sinistros", (string)null);
+                    b.ToTable("historico_sinistros", (string)null);
                 });
 
             modelBuilder.Entity("gestao_sinistros_api.Application.Domain.Entities.Sinistro", b =>
@@ -174,6 +179,10 @@ namespace gestao_sinistros_api.Migrations
                     b.Property<Guid>("ApoliceId")
                         .HasColumnType("uuid")
                         .HasColumnName("apolice_id");
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("closed_at");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -189,7 +198,8 @@ namespace gestao_sinistros_api.Migrations
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("descricao");
 
                     b.Property<string>("MotivoNegacao")
@@ -198,7 +208,8 @@ namespace gestao_sinistros_api.Migrations
 
                     b.Property<string>("Numero")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("numero");
 
                     b.Property<int>("Status")
@@ -210,11 +221,11 @@ namespace gestao_sinistros_api.Migrations
                         .HasColumnName("updated_at");
 
                     b.Property<decimal>("ValorAprovado")
-                        .HasColumnType("numeric")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("valor_aprovado");
 
                     b.Property<decimal>("ValorEstimado")
-                        .HasColumnType("numeric")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("valor_estimado");
 
                     b.HasKey("Id")
@@ -229,7 +240,7 @@ namespace gestao_sinistros_api.Migrations
             modelBuilder.Entity("gestao_sinistros_api.Application.Domain.Entities.Apolice", b =>
                 {
                     b.HasOne("gestao_sinistros_api.Application.Domain.Entities.Cliente", "Cliente")
-                        .WithMany()
+                        .WithMany("Apolices")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -241,11 +252,11 @@ namespace gestao_sinistros_api.Migrations
             modelBuilder.Entity("gestao_sinistros_api.Application.Domain.Entities.HistoricoSinistro", b =>
                 {
                     b.HasOne("gestao_sinistros_api.Application.Domain.Entities.Sinistro", "Sinistro")
-                        .WithMany()
+                        .WithMany("Historicos")
                         .HasForeignKey("SinistroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_historicos_sinistros_sinistros_sinistro_id");
+                        .HasConstraintName("fk_historico_sinistros_sinistros_sinistro_id");
 
                     b.Navigation("Sinistro");
                 });
@@ -253,13 +264,28 @@ namespace gestao_sinistros_api.Migrations
             modelBuilder.Entity("gestao_sinistros_api.Application.Domain.Entities.Sinistro", b =>
                 {
                     b.HasOne("gestao_sinistros_api.Application.Domain.Entities.Apolice", "Apolice")
-                        .WithMany()
+                        .WithMany("Sinistros")
                         .HasForeignKey("ApoliceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_sinistros_apolices_apolice_id");
 
                     b.Navigation("Apolice");
+                });
+
+            modelBuilder.Entity("gestao_sinistros_api.Application.Domain.Entities.Apolice", b =>
+                {
+                    b.Navigation("Sinistros");
+                });
+
+            modelBuilder.Entity("gestao_sinistros_api.Application.Domain.Entities.Cliente", b =>
+                {
+                    b.Navigation("Apolices");
+                });
+
+            modelBuilder.Entity("gestao_sinistros_api.Application.Domain.Entities.Sinistro", b =>
+                {
+                    b.Navigation("Historicos");
                 });
 #pragma warning restore 612, 618
         }

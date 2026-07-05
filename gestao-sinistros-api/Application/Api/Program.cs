@@ -1,5 +1,6 @@
 using gestao_sinistros_api.Application.Api.Middlewares;
 using gestao_sinistros_api.Application.Api.Services;
+using gestao_sinistros_api.Application.Infrastructure.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,15 @@ builder.Services.AddScoped<ApoliceService>();
 builder.Services.AddScoped<SinistroService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+
+    await context.Database.MigrateAsync();
+    await DatabaseSeeder.SeedAsync(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

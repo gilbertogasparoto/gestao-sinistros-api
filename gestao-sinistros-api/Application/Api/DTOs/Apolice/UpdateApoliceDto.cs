@@ -6,7 +6,7 @@ namespace gestao_sinistros_api.Application.Api.DTOs
     public class UpdateApoliceDto
     {
         [Required]
-        public TipoSeguro TipoSeguro { get; set; }
+        public RamoSeguro RamoSeguro { get; set; }
 
         [Required]
         public bool Ativo { get; set; }

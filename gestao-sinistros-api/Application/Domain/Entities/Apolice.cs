@@ -10,7 +10,7 @@ namespace gestao_sinistros_api.Application.Domain.Entities
 
         public Cliente Cliente { get; set; } = null!;
 
-        public TipoSeguro TipoSeguro { get; set; }
+        public RamoSeguro RamoSeguro { get; set; }
 
         public bool Ativo { get; set; }
 

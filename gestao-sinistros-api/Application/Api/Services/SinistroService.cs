@@ -144,7 +144,12 @@ namespace gestao_sinistros_api.Application.Api.Services
 
             sinistro.Status = dto.Status;
             sinistro.ValorAprovado = dto.ValorAprovado ?? sinistro.ValorAprovado;
-            sinistro.MotivoNegacao = dto.Status == SinistroStatus.Negado ? dto.MotivoNegacao : null;
+            sinistro.MotivoNegacao = dto.MotivoNegacao ?? sinistro.MotivoNegacao;
+
+            if (FinalStatuses.Contains(dto.Status))
+            {
+                sinistro.ClosedAt = DateTime.UtcNow;
+            }
 
             await _context.SaveChangesAsync();
             await AddHistoricoAsync(sinistro.Id, dto.Status, dto.Observacao ?? $"Status alterado para {dto.Status}.");
@@ -189,7 +194,8 @@ namespace gestao_sinistros_api.Application.Api.Services
                 DataOcorrencia = sinistro.DataOcorrencia,
                 ValorEstimado = sinistro.ValorEstimado,
                 ValorAprovado = sinistro.ValorAprovado,
-                MotivoNegacao = sinistro.MotivoNegacao
+                MotivoNegacao = sinistro.MotivoNegacao,
+                ClosedAt = sinistro.ClosedAt
             };
         }
 
@@ -216,31 +222,41 @@ namespace gestao_sinistros_api.Application.Api.Services
 
         private static void ValidateChangeStatusFields(ChangeStatusSinistroDto dto)
         {
+            var motivoNegacaoBlockException = new BusinessException("O Motivo de Negação só pode ser informado quando o sinistro é Negado.");
+
+            var valorAprovadoBlockException = new BusinessException("O Valor Aprovado só pode ser informado quando o sinistro é Encerrado.");
+
             switch (dto.Status)
             {
                 case SinistroStatus.Encerrado:
                     if (dto.ValorAprovado is null)
-                        throw new BusinessException("O valorAprovado é obrigatório ao encerrar um sinistro.");
+                        throw new BusinessException("O Valor Aprovado é obrigatório ao encerrar um sinistro.");
 
                     if (!string.IsNullOrWhiteSpace(dto.MotivoNegacao))
-                        throw new BusinessException("motivoNegacao só pode ser informado quando o sinistro é negado.");
+                        throw motivoNegacaoBlockException;
                     break;
                 case SinistroStatus.Negado:
                     if (string.IsNullOrWhiteSpace(dto.MotivoNegacao))
-                        throw new BusinessException("O motivoNegacao é obrigatório ao negar um sinistro.");
+                        throw new BusinessException("O Motivo de Negação é obrigatório ao negar um sinistro.");
 
                     if (dto.ValorAprovado is not null)
-                        throw new BusinessException("valorAprovado não pode ser informado para um sinistro negado.");
+                        throw valorAprovadoBlockException;
                     break;
                 default:
                     if (dto.ValorAprovado is not null)
-                        throw new BusinessException("valorAprovado só pode ser informado ao encerrar um sinistro.");
+                        throw valorAprovadoBlockException;
 
                     if (!string.IsNullOrWhiteSpace(dto.MotivoNegacao))
-                        throw new BusinessException("motivoNegacao só pode ser informado ao negar um sinistro.");
+                        throw motivoNegacaoBlockException;
                     break;
             }
         }
+
+        private static readonly SinistroStatus[] FinalStatuses =
+        [
+            SinistroStatus.Encerrado,
+            SinistroStatus.Negado
+        ];
     }
 }
 

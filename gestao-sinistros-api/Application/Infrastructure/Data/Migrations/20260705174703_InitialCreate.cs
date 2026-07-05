@@ -16,10 +16,10 @@ namespace gestao_sinistros_api.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    nome = table.Column<string>(type: "text", nullable: false),
-                    documento = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    telefone = table.Column<string>(type: "text", nullable: false),
+                    nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    documento = table.Column<string>(type: "character varying(14)", maxLength: 14, nullable: false),
+                    email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    telefone = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -34,9 +34,9 @@ namespace gestao_sinistros_api.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    numero = table.Column<string>(type: "text", nullable: false),
+                    numero = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     cliente_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    tipo_seguro = table.Column<int>(type: "integer", nullable: false),
+                    ramo_seguro = table.Column<int>(type: "integer", nullable: false),
                     ativo = table.Column<bool>(type: "boolean", nullable: false),
                     data_inicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     data_fim = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -60,14 +60,15 @@ namespace gestao_sinistros_api.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    numero = table.Column<string>(type: "text", nullable: false),
+                    numero = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     apolice_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    descricao = table.Column<string>(type: "text", nullable: false),
+                    descricao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     status = table.Column<int>(type: "integer", nullable: false),
                     data_ocorrencia = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    valor_estimado = table.Column<decimal>(type: "numeric", nullable: false),
-                    valor_aprovado = table.Column<decimal>(type: "numeric", nullable: false),
+                    valor_estimado = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    valor_aprovado = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     motivo_negacao = table.Column<string>(type: "text", nullable: true),
+                    closed_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -84,7 +85,7 @@ namespace gestao_sinistros_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "historicos_sinistros",
+                name: "historico_sinistros",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -98,9 +99,9 @@ namespace gestao_sinistros_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_historicos_sinistros", x => x.id);
+                    table.PrimaryKey("pk_historico_sinistros", x => x.id);
                     table.ForeignKey(
-                        name: "fk_historicos_sinistros_sinistros_sinistro_id",
+                        name: "fk_historico_sinistros_sinistros_sinistro_id",
                         column: x => x.sinistro_id,
                         principalTable: "sinistros",
                         principalColumn: "id",
@@ -113,8 +114,8 @@ namespace gestao_sinistros_api.Migrations
                 column: "cliente_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_historicos_sinistros_sinistro_id",
-                table: "historicos_sinistros",
+                name: "ix_historico_sinistros_sinistro_id",
+                table: "historico_sinistros",
                 column: "sinistro_id");
 
             migrationBuilder.CreateIndex(
@@ -127,7 +128,7 @@ namespace gestao_sinistros_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "historicos_sinistros");
+                name: "historico_sinistros");
 
             migrationBuilder.DropTable(
                 name: "sinistros");

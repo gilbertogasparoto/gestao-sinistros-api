@@ -1,3 +1,4 @@
+using gestao_sinistros_api.Application.Api.Commom;
 using gestao_sinistros_api.Application.Api.DTOs;
 using gestao_sinistros_api.Application.Domain.Entities;
 using gestao_sinistros_api.Application.Domain.Enums;
@@ -26,9 +27,9 @@ namespace gestao_sinistros_api.Application.Api.Services
                     EF.Functions.ILike(a.Cliente.Nome, $"%{search}%"));
             }
 
-            if (queryParams.TipoSeguro.HasValue)
+            if (queryParams.RamoSeguro.HasValue)
             {
-                query = query.Where(a => a.TipoSeguro == queryParams.TipoSeguro.Value);
+                query = query.Where(a => a.RamoSeguro == queryParams.RamoSeguro.Value);
             }
 
             if (queryParams.Ativo.HasValue)
@@ -64,14 +65,14 @@ namespace gestao_sinistros_api.Application.Api.Services
             var clienteExists = await _context.Clientes.AnyAsync(c => c.Id == dto.ClienteId);
             if (!clienteExists)
             {
-                throw new InvalidOperationException("Cliente não encontrado.");
+                throw new BusinessException("Cliente não encontrado.");
             }
 
             var apolice = new Apolice
             {
                 Numero = dto.Numero,
                 ClienteId = dto.ClienteId,
-                TipoSeguro = dto.TipoSeguro,
+                RamoSeguro = dto.RamoSeguro,
                 Ativo = dto.Ativo,
                 DataInicio = dto.DataInicio,
                 DataFim = dto.DataFim
@@ -88,7 +89,7 @@ namespace gestao_sinistros_api.Application.Api.Services
             var apolice = await _context.Apolices.FirstOrDefaultAsync(a => a.Id == id);
             if (apolice == null) return null;
 
-            apolice.TipoSeguro = dto.TipoSeguro;
+            apolice.RamoSeguro = dto.RamoSeguro;
             apolice.Ativo = dto.Ativo;
             apolice.DataInicio = dto.DataInicio;
             apolice.DataFim = dto.DataFim;
@@ -114,7 +115,7 @@ namespace gestao_sinistros_api.Application.Api.Services
                 Id = apolice.Id,
                 Numero = apolice.Numero,
                 ClienteId = apolice.ClienteId,
-                TipoSeguro = apolice.TipoSeguro,
+                RamoSeguro = apolice.RamoSeguro,
                 Ativo = apolice.Ativo,
                 DataInicio = apolice.DataInicio,
                 DataFim = apolice.DataFim

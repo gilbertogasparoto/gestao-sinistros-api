@@ -14,7 +14,7 @@ public class ApoliceConfiguration : IEntityTypeConfiguration<Apolice>
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(a => a.TipoSeguro)
+        builder.Property(a => a.RamoSeguro)
             .IsRequired();
 
         builder.HasOne(a => a.Cliente)

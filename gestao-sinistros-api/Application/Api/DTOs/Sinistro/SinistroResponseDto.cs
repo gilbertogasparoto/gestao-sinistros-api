@@ -13,5 +13,6 @@ namespace gestao_sinistros_api.Application.Api.DTOs.Sinistro
         public decimal ValorEstimado { get; set; }
         public decimal ValorAprovado { get; set; }
         public string? MotivoNegacao { get; set; }
+        public DateTime? ClosedAt { get; set; }
     }
 }

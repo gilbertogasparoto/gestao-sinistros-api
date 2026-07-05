@@ -22,6 +22,8 @@ namespace gestao_sinistros_api.Application.Domain.Entities
 
         public string? MotivoNegacao { get; set; }
 
+        public DateTime? ClosedAt { get; set; }
+
         public ICollection<HistoricoSinistro> Historicos { get; set; } = new List<HistoricoSinistro>();
     }
 }

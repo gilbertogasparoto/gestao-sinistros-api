@@ -13,7 +13,7 @@ namespace gestao_sinistros_api.Application.Api.DTOs
         public Guid ClienteId { get; set; }
 
         [Required]
-        public TipoSeguro TipoSeguro { get; set; }
+        public RamoSeguro RamoSeguro { get; set; }
 
         [Required]
         public bool Ativo { get; set; }
