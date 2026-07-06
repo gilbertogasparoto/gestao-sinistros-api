@@ -22,6 +22,9 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.HasIndex(c => c.Email)
+            .IsUnique();
+
         builder.Property(c => c.Telefone)
             .IsRequired()
             .HasMaxLength(15);

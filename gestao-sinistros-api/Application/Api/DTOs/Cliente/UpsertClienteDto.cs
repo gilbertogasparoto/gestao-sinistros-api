@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using gestao_sinistros_api.Application.Api.DTOs.Validators;
 
 namespace gestao_sinistros_api.Application.Api.DTOs.Cliente
 {
@@ -9,7 +10,7 @@ namespace gestao_sinistros_api.Application.Api.DTOs.Cliente
         public string Nome { get; set; }
 
         [Required]
-        [StringLength(14, MinimumLength = 11)]
+        [ValidCpf]
         public string Documento { get; set; }
 
         [Required]

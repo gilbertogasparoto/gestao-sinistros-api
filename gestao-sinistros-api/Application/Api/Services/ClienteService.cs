@@ -1,3 +1,4 @@
+using gestao_sinistros_api.Application.Api.Commom;
 using gestao_sinistros_api.Application.Api.DTOs;
 using gestao_sinistros_api.Application.Api.DTOs.Cliente;
 using gestao_sinistros_api.Application.Domain.Entities;
@@ -57,6 +58,10 @@ namespace gestao_sinistros_api.Application.Api.Services
 
         public async Task<ClienteResponseDto> Create(UpsertClienteDto dto)
         {
+            var emailExists = await _context.Clientes.AnyAsync(c => c.Email == dto.Email);
+            if (emailExists)
+                throw new BusinessException("Já existe um cliente com este email.");
+
             var cliente = new Cliente
             {
                 Nome = dto.Nome,
@@ -75,6 +80,14 @@ namespace gestao_sinistros_api.Application.Api.Services
         {
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
             if (cliente == null) return null;
+
+            // Verifica se o email já existe e não pertence ao cliente atual
+            if (cliente.Email != dto.Email)
+            {
+                var emailExists = await _context.Clientes.AnyAsync(c => c.Email == dto.Email);
+                if (emailExists)
+                    throw new BusinessException("Já existe um cliente com este email.");
+            }
 
             cliente.Nome = dto.Nome;
             cliente.Documento = dto.Documento;

@@ -26,6 +26,17 @@ builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<ApoliceService>();
 builder.Services.AddScoped<SinistroService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AngularPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -48,6 +59,8 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AngularPolicy");
 
 app.UseAuthorization();
 
