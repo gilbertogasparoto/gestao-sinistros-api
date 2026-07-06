@@ -62,7 +62,7 @@ public static class DatabaseSeeder
                 var dataOcorrencia = faker.Date.Between(DateTime.UtcNow.AddYears(-2), DateTime.UtcNow.AddDays(-5));
                 var closedAt = status is SinistroStatus.Aberto or SinistroStatus.EmAnalise or SinistroStatus.Aprovado
                     ? (DateTime?)null
-                    : faker.Date.Between(dataOcorrencia, DateTime.UtcNow.AddDays(7));
+                    : faker.Date.Between(dataOcorrencia, DateTime.UtcNow.AddDays(-1));
 
                 return new Sinistro
                 {

@@ -31,3 +31,23 @@ GROUP BY c.id, c.nome
 ORDER BY total_estimado DESC
 LIMIT 10;
 
+-- 3. Tempo médio de resolução em dias de sinistros encerrados agrupado por tamo
+
+SELECT
+    CASE a.ramo_seguro
+        WHEN 1 THEN 'Automóvel'
+        WHEN 2 THEN 'Residencial'
+        WHEN 3 THEN 'Vida'
+        WHEN 4 THEN 'Empresarial'
+    END AS ramo,
+    AVG(
+        EXTRACT(
+            DAY FROM (s.closed_at - s.data_ocorrencia)
+        )
+    ) AS media_dias
+FROM sinistros s
+JOIN apolices a
+    ON a.id = s.apolice_id
+WHERE s.status = 4
+GROUP BY ramo
+ORDER BY media_dias;

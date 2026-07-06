@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace gestao_sinistros_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260705174703_InitialCreate")]
+    [Migration("20260706040750_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

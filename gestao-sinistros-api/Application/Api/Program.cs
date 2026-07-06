@@ -26,6 +26,7 @@ builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<ApoliceService>();
 builder.Services.AddScoped<SinistroService>();
 
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
